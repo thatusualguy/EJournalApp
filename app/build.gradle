@@ -1,0 +1,134 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'com.google.protobuf'
+}
+
+android {
+    namespace 'io.github.thatusualguy.ejournal'
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "io.github.thatusualguy.ejournal"
+        minSdk 29
+        targetSdk 33
+        versionCode 4
+        versionName "1.0.2"
+
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.4"
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+
+    sourceSets {
+        main {
+            proto {
+                // In addition to the default 'src/main/proto'
+                srcDir 'src/main/java/io/github/thatusualguy/ejournal/domain/api'
+            }
+        }
+    }
+}
+
+protobuf {
+    protoc { artifact = "com.google.protobuf:protoc:$protobuf_version" }
+    plugins {
+        java {
+            artifact = "io.grpc:protoc-gen-grpc-java:$grpc_version"
+        }
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:$grpc_version"
+        }
+        grpckt {
+            artifact = "io.grpc:protoc-gen-grpc-kotlin:$grpc_kotlin_version:jdk8@jar"
+        }
+    }
+
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    option 'lite'
+                }
+                kotlin {
+                    option 'lite'
+                }
+            }
+            task.plugins {
+                grpc { // Options added to --grpc_out
+                    option 'lite'
+                }
+                grpckt { // Options added to --grpc_out
+                    option 'lite'
+                }
+            }
+        }
+    }
+}
+
+
+dependencies {
+    implementation "androidx.compose.animation:animation:$compose_ui_version"
+    implementation "androidx.compose.foundation:foundation:$compose_ui_version"
+    implementation "androidx.compose.material:material:$compose_ui_version"
+    implementation "androidx.compose.runtime:runtime:$compose_ui_version"
+
+    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
+    implementation 'androidx.activity:activity-compose:1.7.2'
+    implementation "androidx.compose.ui:ui:$compose_ui_version"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_ui_version"
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
+    implementation 'androidx.activity:activity-ktx:1.7.2'
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
+    implementation "androidx.navigation:navigation-compose:2.5.3"
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.27.0"
+
+
+    // grpc
+    implementation "io.grpc:grpc-stub:1.55.1"
+    implementation "io.grpc:grpc-protobuf:1.55.1"
+    implementation "io.grpc:grpc-okhttp:1.55.1"
+    implementation "com.google.protobuf:protobuf-java-util:3.21.7"
+    implementation "com.google.protobuf:protobuf-kotlin:3.21.7"
+    implementation "io.grpc:grpc-kotlin-stub:1.3.0"
+    implementation "io.grpc:grpc-kotlin-stub-lite:1.0.0"
+
+    implementation 'io.grpc:grpc-protobuf-lite:1.55.1' // CURRENT_GRPC_VERSION
+
+    implementation 'com.google.android.datatransport:transport-runtime:3.1.9'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
+    debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
+}
+
+configurations {
+    implementation.exclude module: 'protobuf-java'
+}

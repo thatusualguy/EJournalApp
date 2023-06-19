@@ -1,0 +1,298 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+option csharp_namespace = "EJournalGrpcService";
+option java_package = "io.github.thatusualguy.ejournal.grpc";
+
+package ejournal;
+
+// -------------------------------------------
+// services
+
+service Account{
+  rpc register (register_request) returns (action_reply);
+  rpc login (login_request) returns (login_reply);
+  rpc check_token (google.protobuf.Empty) returns (check_reply);
+  rpc get_roles (google.protobuf.Empty) returns (account_roles);
+  rpc change_password (change_password_request) returns (action_reply);
+}
+
+service Timetable{
+  rpc get_current_week (google.protobuf.Empty) returns (week_reply);
+
+  rpc get_my_student_timetable (google.protobuf.Empty) returns (timetable_reply);
+  rpc get_student_timetable (id_request) returns (timetable_reply);
+  rpc get_group_timetable (id_request) returns (timetable_reply);
+  rpc get_teacher_timetable (id_request) returns (timetable_reply);
+}
+
+service Students{
+  rpc get_my_student (google.protobuf.Empty) returns (student_info_full);
+  rpc get_student (id_request) returns (student_info_full);
+
+  rpc get_all_students (google.protobuf.Empty) returns (students_info);
+  rpc get_all_students_paging (page_request) returns (students_info);
+
+  rpc get_my_subjects (google.protobuf.Empty) returns (subjects_list);
+  rpc get_students_subjects (id_request) returns (subjects_list);
+}
+
+service Groups{
+  rpc get_groups_list (google.protobuf.Empty) returns (name_id_list);
+  rpc get_specialties_list (google.protobuf.Empty) returns (name_id_list);
+
+  rpc get_group (id_request) returns (group_info);
+  rpc get_all_groups (google.protobuf.Empty) returns (group_info_short_list);
+}
+
+service Teachers{
+  rpc get_courses_list (google.protobuf.Empty) returns (name_id_list);
+
+  rpc get_teacher (id_request) returns (teacher_info);
+  rpc get_all_teachers (google.protobuf.Empty) returns (teacher_info_list);
+
+  rpc get_teacher_subjects (id_request) returns (subjects_list);
+}
+
+service Statistics{
+  rpc get_gpa (google.protobuf.Empty) returns (gra_reply);
+  rpc get_student_gpa (id_request) returns (gra_reply);
+
+  rpc get_gpa_by_subjects (google.protobuf.Empty) returns (subjects_gra_reply);
+  rpc get_student_gpa_by_subjects (id_request) returns (subjects_gra_reply);
+  rpc get_my_group_gpa_by_subjects (google.protobuf.Empty) returns (subjects_gra_reply);
+  rpc get_group_gpa_by_subjects (id_request) returns (subjects_gra_reply);
+}
+
+service Subjects{
+  rpc get_all_subjects (google.protobuf.Empty) returns (subjects_list);
+  rpc get_subject_by_id (id_request) returns (subject_info);
+}
+
+service Journal{
+  rpc get_subject_by_id (id_request) returns (subject_info);
+
+  rpc get_my_marks_by_subject(id_request) returns (subject_marks);
+  rpc get_marks_by_student_by_subject (marks_by_student_by_subject_request) returns (subject_marks);
+}
+
+service AdminCommands{
+  rpc update_group(string_request) returns (google.protobuf.Empty);
+  rpc update_all_groups(google.protobuf.Empty) returns (google.protobuf.Empty);
+}
+
+// -------------------------------------------
+// messages
+
+message page_request{
+  int32 page_num = 1;
+  int32 page_size = 2;
+}
+
+message register_request{
+  string email = 1;
+  string password = 2;
+  string phone = 3;
+}
+
+    message login_request{
+      string email = 1;
+      string password = 2;
+    }
+
+    message login_reply{
+      oneof result {
+        string jwt = 1;
+        string error_message = 2;
+      }
+    }
+
+message account_roles {
+  repeated string roles = 1;
+}
+
+message change_password_request{
+  string old_password = 1;
+  string new_password = 2;
+}
+
+message action_reply{
+  oneof result{
+    bool success = 1;
+    string error_message = 2;
+  }
+}
+
+message name_id_list{
+  repeated name_id values = 1;
+}
+
+message name_id{
+  string name = 1;
+  int32 id = 2;
+}
+
+enum week_type {
+  top = 0;
+  bottom = 1;
+}
+
+message week_reply{
+  week_type type = 1;
+}
+
+message timetable_reply{
+  repeated week_timetable weeks = 1;
+  string timetable_name = 2;
+}
+
+message week_timetable{
+  week_type type = 1;
+  repeated day_timetable days = 2;
+}
+
+message day_timetable{
+  int32 day = 1;
+  repeated lesson_timetable lessons = 2;
+}
+
+message lesson_timetable{
+  int32 period = 1;
+  string subject_name = 2;
+  string teacher_name = 5;
+  string room = 4;
+  int32 group_id = 3;
+  string group_name = 6;
+  int32 day = 7;
+  int32 week_type = 8;
+}
+
+message id_request{
+  int32 id = 1;
+}
+
+message student_info{
+  int32 id = 1;
+  name student_name = 2;
+  int32 group_id = 3;
+  string group = 4;
+  int32 course = 5;
+  bool budget = 6;
+  int32 specialty_id = 7;
+  string specialty = 8;
+}
+
+message student_info_full{
+  int32 id = 1;
+  name student_name = 2;
+  int32 group_id = 3;
+  string group = 4;
+  int32 course = 5;
+  bool budget = 6;
+  int32 specialty_id = 7;
+  string specialty = 8;
+
+  repeated name_id teachers = 9;
+  repeated name_id courses = 10;
+}
+
+message students_info{
+  repeated student_info students = 1;
+}
+
+message gra_reply{
+  double average = 1;
+}
+
+message subjects_gra_reply{
+  repeated subject_gpa subjects = 1;
+}
+
+message subject_gpa{
+  int32 subject_id = 1;
+  string subject = 2;
+  float average = 3;
+}
+
+message subjects_list{
+  repeated subject_info subjects = 1;
+}
+
+message subject_info {
+  int32 subject_id = 1;
+  string subject_name = 2;
+  int32 course_id = 3;
+  int32 teacher_id = 4;
+  name teacher_name = 5;
+  repeated name_id other_groups = 6;
+}
+
+message marks_by_student_by_subject_request{
+  int32 student_id = 1;
+  int32 subject_id = 2;
+}
+
+message subject_marks{
+  repeated lesson_mark lessons = 1;
+}
+
+message lesson_mark{
+  google.protobuf.Timestamp date = 1;
+  int32 mark = 2;
+  string theme = 3;
+  string note = 4;
+}
+
+message teacher_info_list {
+  repeated teacher_info teachers = 1;
+}
+
+message teacher_info{
+  int32 id = 1;
+  name name = 2;
+  string contact_info = 3;
+  repeated name_id courses = 4;
+  repeated name_id groups = 5;
+}
+
+message name{
+  string first_name = 1;
+  string middle_name = 2;
+  string last_name = 3;
+}
+
+message check_reply{
+  int32 id = 1;
+}
+
+message string_request{
+  string value = 1;
+}
+
+message group_info{
+  int32 id = 1;
+  int32 admission_year = 2;
+  int32 course = 3;
+  string name = 4;
+  int32 specialty_id = 5;
+  string specialty_name = 6;
+
+  repeated name_id students = 7;
+  repeated name_id courses = 8;
+  repeated name_id teachers = 9;
+}
+
+message group_info_short{
+  int32 id = 1;
+  int32 admission_year = 2;
+  int32 course = 3;
+  string name = 4;
+  int32 specialty_id = 5;
+  string specialty_name = 6;
+}
+
+message group_info_short_list{
+  repeated group_info_short groups = 1;
+}
