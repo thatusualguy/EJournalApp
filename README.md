@@ -29,6 +29,7 @@ Download available as:
 * Android Studio
 * Kotlin
 * Jetpack Compose
+* Material Design 2
 * gRPC
 * MVVM architecture
 
@@ -71,33 +72,26 @@ The details screen for subject shows a list of lessons, sorted by date. Rows can
 <img src=https://github.com/thatusualguy/EJournalApp/assets/76885701/21a4523f-6b5f-417b-a07a-77c20660cbd4 width = 300/>
 
 ### Search
-Search is done using either search of filtration. There are several filtrations available for each type of search. 
+Search is done using either search of filtration. There are several filtrations available for each type of search. Teacher search is shown.
 
-_For more examples and usage, please refer to the [Wiki][wiki].
+<img src=https://github.com/thatusualguy/EJournalApp/assets/76885701/55d47760-334d-434d-91fe-aa8d6ce5751d width = 300/>
+<img src=https://github.com/thatusualguy/EJournalApp/assets/76885701/0a0dd5e2-b93b-4682-91de-9565ddfb2de2 width = 300/>
+
+
+*For more examples and usage, please refer to the [Wiki][wiki].*
 
 ## Development setup
 
-Describe how to install all development dependencies and how to run an automated test-suite of some kind. Potentially do this for multiple platforms.
-
-```sh
-make install
-npm test
+Android Studio Flamingo 2022.2.1
 ```
+File -> New -> Project from Version Control -> Project URL: https://github.com/thatusualguy/EJournalApp
+```
+
 
 ## Release History
 
-* 0.2.1
-    * CHANGE: Update docs (module code remains unchanged)
-* 0.2.0
-    * CHANGE: Remove `setDefaultXYZ()`
-    * ADD: Add `init()`
-* 0.1.1
-    * FIX: Crash when calling `baz()` (Thanks @GenerousContributorName!)
-* 0.1.0
-    * The first proper release
-    * CHANGE: Rename `foo()` to `bar()`
-* 0.0.1
-    * Work in progress
+* 1.0.2
+  * First release
 
 ## Meta
 
@@ -105,11 +99,11 @@ Maksim Rybakov – TG [@thatusualguy](https://t.me/thatusualguy)
 
 Distributed under the XYZ license. See ``LICENSE`` for more information.
 
-[https://github.com/thatusualguy/github-link](https://github.com/thatusualguy)
+[https://github.com/thatusualguy](https://github.com/thatusualguy)
 
 ## Contributing
 
-1. Fork it (<https://github.com/yourname/yourproject/fork>)
+1. Fork it (<https://github.com/thatusualguy/EJournalApp/fork>)
 2. Create your feature branch (`git checkout -b feature/fooBar`)
 3. Commit your changes (`git commit -am 'Add some fooBar'`)
 4. Push to the branch (`git push origin feature/fooBar`)
